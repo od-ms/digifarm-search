@@ -2,8 +2,8 @@ body {
   height: 600px;
 }
 
-.project-list {
-  height: 600px;
+.project-list-wrapper {
+  height: 100%;
   overflow: auto;
 }
 
@@ -11,6 +11,14 @@ body {
   list-style-type: none;
 }
 
-.search-list-item {
+.container-fluid {
+  height: 100%;
+}
 
+.search-wrapper {
+  height: 100%;
+}
+
+.project-attribute {
+  margin-bottom: 0.25rem;
 }

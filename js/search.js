@@ -23,16 +23,17 @@ function getProjectListHtml(projects = null) {
     if (project['Kurzbeschreibung']) {
       projectData += "<p>" + project['Kurzbeschreibung'] + "</p>";
     }
-    projectData += "<ul>";
+    projectData += "<dl class='row'>";
     const properties = ['Ursprung', 'Quelle', 'Kategorie', 'Komplexität', 'Technologien'];
     properties.forEach(function (property) {
       if (project[property]) {
-        projectData += "<li>" + property + ": " + project[property] + "</li>"
+        projectData += "<dt class='col-5 col-sm-4 col-md-3 col-xl-2 fw-normal'>" + property + ": " + "</dt>";
+        projectData += "<dd class='col-7 col-sm-8 col-md-9 col-xl-10 project-attribute'>" + project[property] + "</dd>"
       }
     })
     projectData += "</ul>";
     if (project['Projekt-Url']) {
-      projectData += "<p></p><a href='" + project['Projekt-Url'] + "'>Zum Projekt</a></p>";
+      projectData += "<p></p><a href='" + project['Projekt-Url'] + "' target=\"_blank\">Zum Projekt</a></p>";
     }
     projectList.append("<li class='list-group-item' id='" + key + "'>" + projectData + "</li>");
   });
@@ -113,6 +114,12 @@ $().ready(function () {
       filteredProjects = projects;
     }
     projectHtml = getProjectListHtml(filteredProjects);
+    $('.project-list').html(projectHtml);
+  });
+
+  $('#filter-reset-button').on('click', function () {
+    $('.filterbox').prop('selectedIndex', 0);
+    projectHtml = getProjectListHtml(projects);
     $('.project-list').html(projectHtml);
   });
 });
