@@ -1,0 +1,16 @@
+body {
+  height: 600px;
+}
+
+.project-list {
+  height: 600px;
+  overflow: auto;
+}
+
+.search-list {
+  list-style-type: none;
+}
+
+.search-list-item {
+
+}
