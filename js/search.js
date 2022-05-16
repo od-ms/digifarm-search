@@ -1,3 +1,8 @@
+/**
+ * Loads the project list from the data directory.
+ *
+ * @returns {Object} projects
+ */
 function loadProjects() {
   $.ajax({
     type: 'GET',
@@ -9,9 +14,16 @@ function loadProjects() {
     async: false
   });
 
+  console.log(typeof projects);
   return projects;
 }
 
+/**
+ * Get the prepared project list as HTML Element.
+ *
+ * @param {Object} projects
+ * @returns {jQuery|HTMLElement} projectList
+ */
 function getProjectListHtml(projects = null) {
   if (projects === null) {
     projects = loadProjects();
@@ -41,6 +53,13 @@ function getProjectListHtml(projects = null) {
   return projectList;
 }
 
+/**
+ * Filter the project list by a given filter.
+ *
+ * @param {array} filter
+ * @param {Object} projects
+ * @returns {Object} filteredProjects
+ */
 function filterData(filter, projects = null) {
   let filteredProjects;
 
@@ -53,6 +72,13 @@ function filterData(filter, projects = null) {
   return filteredProjects;
 }
 
+/**
+ * Get the options elements for a given key from the project list.
+ *
+ * @param {string} key
+ * @param {Object} projects
+ * @returns {jQuery|HTMLElement} $options
+ */
 function getSelectOptionsHTMLByKey(key, projects = null) {
   if (projects === null) {
     projects = loadProjects();
@@ -82,11 +108,13 @@ function getSelectOptionsHTMLByKey(key, projects = null) {
 }
 
 $().ready(function () {
-  const projects = loadProjects();
 
+  // Load and add the project list to the template.
+  const projects = loadProjects();
   let projectList = getProjectListHtml(projects);
   $('.project-list').html(projectList);
 
+  // Get the select box options for filter elements by key.
   let originOptions = getSelectOptionsHTMLByKey('Ursprung');
   $('#origin-select').html(originOptions);
 
@@ -102,6 +130,7 @@ $().ready(function () {
   let complexityOptions = getSelectOptionsHTMLByKey('Komplexität');
   $('#complexity-select').html(complexityOptions);
 
+  // Update the project list when an filter option is select or not.
   $('.filterbox').on('change', function (e) {
     $('.filterbox').not(this).prop('selectedIndex', 0);
 
@@ -117,6 +146,7 @@ $().ready(function () {
     $('.project-list').html(projectHtml);
   });
 
+  // Reset the project list if reset button is clicked.
   $('#filter-reset-button').on('click', function () {
     $('.filterbox').prop('selectedIndex', 0);
     projectHtml = getProjectListHtml(projects);
