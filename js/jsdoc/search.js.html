@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: search.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: search.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Loads the project list from the data directory.
+ *
+ * @returns {Object} projects
+ */
+function loadProjects() {
+  $.ajax({
+    type: 'GET',
+    url: "data/digifarm.json",
+    dataType: 'json',
+    success: function (data) {
+      projects = data;
+    },
+    async: false
+  });
+
+  console.log(typeof projects);
+  return projects;
+}
+
+/**
+ * Get the prepared project list as HTML Element.
+ *
+ * @param {Object} projects
+ * @returns {jQuery|HTMLElement} projectList
+ */
+function getProjectListHtml(projects = null) {
+  if (projects === null) {
+    projects = loadProjects();
+  }
+
+  let projectList = $('&lt;ul class="list-group">&lt;/ul>');
+  projects.forEach(function (project, key) {
+    let projectData = "&lt;h3 class='fs-5'>" + project.Name + "&lt;/h3>";
+    if (project['Kurzbeschreibung']) {
+      projectData += "&lt;p>" + project['Kurzbeschreibung'] + "&lt;/p>";
+    }
+    projectData += "&lt;dl class='row'>";
+    const properties = ['Ursprung', 'Quelle', 'Kategorie', 'Komplexität', 'Technologien'];
+    properties.forEach(function (property) {
+      if (project[property]) {
+        projectData += "&lt;dt class='col-5 col-sm-4 col-md-3 col-xl-2 fw-normal'>" + property + ": " + "&lt;/dt>";
+        projectData += "&lt;dd class='col-7 col-sm-8 col-md-9 col-xl-10 project-attribute'>" + project[property] + "&lt;/dd>"
+      }
+    })
+    projectData += "&lt;/ul>";
+    if (project['Projekt-Url']) {
+      projectData += "&lt;p>&lt;/p>&lt;a href='" + project['Projekt-Url'] + "' target=\"_blank\">Zum Projekt&lt;/a>&lt;/p>";
+    }
+    projectList.append("&lt;li class='list-group-item' id='" + key + "'>" + projectData + "&lt;/li>");
+  });
+
+  return projectList;
+}
+
+/**
+ * Filter the project list by a given filter.
+ *
+ * @param {array} filter
+ * @param {Object} projects
+ * @returns {Object} filteredProjects
+ */
+function filterData(filter, projects = null) {
+  let filteredProjects;
+
+  if (projects === null) {
+    projects = loadProjects();
+  }
+
+  filteredProjects = projects.filter(project => project[filter.key].includes(filter.value));
+
+  return filteredProjects;
+}
+
+/**
+ * Get the options elements for a given key from the project list.
+ *
+ * @param {string} key
+ * @param {Object} projects
+ * @returns {jQuery|HTMLElement} $options
+ */
+function getSelectOptionsHTMLByKey(key, projects = null) {
+  if (projects === null) {
+    projects = loadProjects();
+  }
+
+  let projectValues = [];
+  projects.forEach(function (project) {
+    if (project[key]) {
+      let stringValues = project[key].split(',');
+      stringValues.forEach(function (stringValue) {
+        stringValue = stringValue.trim();
+        if (!projectValues.includes(stringValue)) {
+          projectValues.push(stringValue);
+        }
+      })
+    }
+  })
+  projectValues.sort();
+
+  let $options = $('&lt;select class="filterbox form-select" name="' + key + '" id="' + key + '">&lt;/select>');
+  $options.append('&lt;option value="" selected>Bitte auswählen&lt;/option>');
+  projectValues.forEach(function (projectValue) {
+    $options.append('&lt;option value="' + projectValue + '">' + projectValue + '&lt;/option>');
+  });
+
+  return $options;
+}
+
+$().ready(function () {
+
+  // Load and add the project list to the template.
+  const projects = loadProjects();
+  let projectList = getProjectListHtml(projects);
+  $('.project-list').html(projectList);
+
+  // Get the select box options for filter elements by key.
+  let originOptions = getSelectOptionsHTMLByKey('Ursprung');
+  $('#origin-select').html(originOptions);
+
+  let technologyOptions = getSelectOptionsHTMLByKey('Technologien');
+  $('#technology-select').html(technologyOptions);
+
+  let sourceOptions = getSelectOptionsHTMLByKey('Quelle');
+  $('#source-select').html(sourceOptions);
+
+  let categoryOptions = getSelectOptionsHTMLByKey('Kategorie');
+  $('#category-select').html(categoryOptions);
+
+  let complexityOptions = getSelectOptionsHTMLByKey('Komplexität');
+  $('#complexity-select').html(complexityOptions);
+
+  // Update the project list when an filter option is select or not.
+  $('.filterbox').on('change', function (e) {
+    $('.filterbox').not(this).prop('selectedIndex', 0);
+
+    var optionSelected = $("option:selected", this);
+    var valueSelected = this.value;
+
+    if (valueSelected) {
+      filteredProjects = filterData({value: this.value, key: this.name})
+    } else {
+      filteredProjects = projects;
+    }
+    projectHtml = getProjectListHtml(filteredProjects);
+    $('.project-list').html(projectHtml);
+  });
+
+  // Reset the project list if reset button is clicked.
+  $('#filter-reset-button').on('click', function () {
+    $('.filterbox').prop('selectedIndex', 0);
+    projectHtml = getProjectListHtml(projects);
+    $('.project-list').html(projectHtml);
+  });
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#filterData">filterData</a></li><li><a href="global.html#getProjectListHtml">getProjectListHtml</a></li><li><a href="global.html#getSelectOptionsHTMLByKey">getSelectOptionsHTMLByKey</a></li><li><a href="global.html#loadProjects">loadProjects</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Mon May 23 2022 10:13:50 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
