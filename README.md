@@ -10,4 +10,4 @@ Just download or clone the repo.
 
 - [HTML5 Boilerplate v8](https://html5boilerplate.com/)
 - [Bootstrap v5.2.0-beta1](https://getbootstrap.com/)
-- [jQuery v3.6.0](https://jquery.org)
+- [jQuery v3.6.0](https://jquery.com)
