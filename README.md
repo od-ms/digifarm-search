@@ -6,6 +6,10 @@ This is the project list for digifarm.ms - a project for volunteers on digital p
 
 Just download or clone the repo.
 
+## Docs
+
+Find docs in js/jsdoc/
+
 ## Dependencies
 
 - [HTML5 Boilerplate v8](https://html5boilerplate.com/)
