@@ -1,7 +1,8 @@
 # Digifarm project list with filter function
 
 This is the project list for digifarm.ms - a project for volunteers on digital public participation.  
-See on GitHub Pages. <https://ccplatz.github.io/digifarm/>
+See it on GitHub Pages. <https://ccplatz.github.io/digifarm/>  
+Find the docs [here](https://ccplatz.github.io/digifarm/js/jsdoc/).
 
 ## Installation
 
